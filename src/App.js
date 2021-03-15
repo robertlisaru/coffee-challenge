@@ -1,7 +1,7 @@
-import usePosition from './components/usePosition';
+import usePosition from './components/usePosition'
 
 function App() {
-  const { latitude, longitude, error } = usePosition();
+  const { latitude, longitude, error } = usePosition()
   return (
     <div>
       <code>
@@ -11,7 +11,7 @@ function App() {
       </code>
 
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
