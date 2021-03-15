@@ -1,6 +1,7 @@
 import usePosition from './components/usePosition'
 import CoffeeShops from './components/CoffeeShops'
 import { useState, useEffect } from 'react'
+import MyMap from './components/MyMap'
 
 function App() {
   const { latitude, longitude, error } = usePosition()
@@ -45,6 +46,7 @@ function App() {
         shops={appState.coffeeShops}
         error={appState.coffeeShopsFetchError} />
 
+      <MyMap shops={appState.coffeeShops} />
     </div>
   )
 }
