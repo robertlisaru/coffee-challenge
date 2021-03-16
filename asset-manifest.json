@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/coffee-challenge/static/css/main.8a7bc98f.chunk.css",
+    "main.js": "/coffee-challenge/static/js/main.c2d49922.chunk.js",
+    "main.js.map": "/coffee-challenge/static/js/main.c2d49922.chunk.js.map",
+    "runtime-main.js": "/coffee-challenge/static/js/runtime-main.9148fae7.js",
+    "runtime-main.js.map": "/coffee-challenge/static/js/runtime-main.9148fae7.js.map",
+    "static/js/2.6a116fbe.chunk.js": "/coffee-challenge/static/js/2.6a116fbe.chunk.js",
+    "static/js/2.6a116fbe.chunk.js.map": "/coffee-challenge/static/js/2.6a116fbe.chunk.js.map",
+    "static/js/3.ba8badf9.chunk.js": "/coffee-challenge/static/js/3.ba8badf9.chunk.js",
+    "static/js/3.ba8badf9.chunk.js.map": "/coffee-challenge/static/js/3.ba8badf9.chunk.js.map",
+    "index.html": "/coffee-challenge/index.html",
+    "static/css/main.8a7bc98f.chunk.css.map": "/coffee-challenge/static/css/main.8a7bc98f.chunk.css.map",
+    "static/js/2.6a116fbe.chunk.js.LICENSE.txt": "/coffee-challenge/static/js/2.6a116fbe.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.9148fae7.js",
+    "static/js/2.6a116fbe.chunk.js",
+    "static/css/main.8a7bc98f.chunk.css",
+    "static/js/main.c2d49922.chunk.js"
+  ]
+}
