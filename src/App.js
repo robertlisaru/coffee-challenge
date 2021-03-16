@@ -1,18 +1,44 @@
-import usePosition from './components/usePosition'
-import CoffeeShops from './components/CoffeeShops'
 import { useState, useEffect } from 'react'
 import MyMap from './components/MyMap'
+import UserLocationText from './components/UserLocationText'
+import CoffeeShopsText from './components/CoffeeShopsText'
 
 function App() {
-  const { latitude, longitude, error } = usePosition()
-  const [appState, setAppState] = useState({
+  const [userLocationState, setUserLocationState] = useState({
+    latitude: null,
+    longitude: null,
     isLoading: false,
-    coffeeShops: null,
-    coffeeShopsFetchError: null
+    error: null
   })
 
+  const [coffeeShopState, setCoffeeShopState] = useState({
+    isLoading: false,
+    coffeeShops: null,
+    fetchError: null
+  })
+
+  const onUserLocationChange = ({ coords }) => {
+    setUserLocationState({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+    })
+  }
+
+  const onUserLocationError = (error) => {
+    setUserLocationState({ error: error.message })
+  }
+
   useEffect(() => {
-    setAppState({ isLoading: true })
+    const geo = navigator.geolocation
+    let watcher = null
+    if (!geo) {
+      setUserLocationState({ error: 'Geolocation is not supported' })
+    } else {
+      setUserLocationState({ isLoading: true })
+      watcher = geo.watchPosition(onUserLocationChange, onUserLocationError)
+    }
+
+    setCoffeeShopState({ isLoading: true })
     fetch('https://blue-bottle-api-test.herokuapp.com/v1/tokens', { method: 'POST' })
       .then((response) => response.json())
       .then((jsonData) => {
@@ -21,32 +47,35 @@ function App() {
             switch (response.status) {
               case 200:
                 response.json()
-                  .then((jsonData) => setAppState({ isLoading: false, coffeeShops: jsonData }))
+                  .then((jsonData) => setCoffeeShopState({ isLoading: false, coffeeShops: jsonData }))
                 break
               default:
-                setAppState({
+                setCoffeeShopState({
                   isLoading: false,
-                  coffeeShopsFetchError: 'Could not fetch shop locations ' +
+                  fetchError: 'Could not fetch shop locations ' +
                     response.status + ': ' + response.statusText
                 })
             }
           })
       })
-  }, [setAppState])
+    return () => geo.clearWatch(watcher)
+  }, [setCoffeeShopState])
 
   return (
     <div>
-      <code>
-        latitude: {latitude}<br />
-        longitude: {longitude}<br />
-        error: {error}
-      </code>
+      <MyMap shops={coffeeShopState.coffeeShops}
+        userLatitude={userLocationState.latitude}
+        userLongitude={userLocationState.longitude} />
 
-      <CoffeeShops isLoading={appState.isLoading}
-        shops={appState.coffeeShops}
-        error={appState.coffeeShopsFetchError} />
+      <UserLocationText isLoading={userLocationState.isLoading}
+        latitude={userLocationState.latitude}
+        longitude={userLocationState.longitude}
+        error={userLocationState.error} />
 
-      <MyMap shops={appState.coffeeShops} />
+      <CoffeeShopsText isLoading={coffeeShopState.isLoading}
+        shops={coffeeShopState.coffeeShops}
+        error={coffeeShopState.fetchError} />
+
     </div>
   )
 }

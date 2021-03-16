@@ -1,4 +1,4 @@
-const CoffeeShops = ({ isLoading, shops, error }) => {
+const CoffeeShopsText = ({ isLoading, shops, error }) => {
     if (isLoading) return <p>Fetching coffee shop list</p>
     if (error) return <p>{error}</p>
     if (!shops || shops.length === 0) return <p>No shops</p>
@@ -18,4 +18,4 @@ const CoffeeShops = ({ isLoading, shops, error }) => {
     )
 }
 
-export default CoffeeShops
+export default CoffeeShopsText
