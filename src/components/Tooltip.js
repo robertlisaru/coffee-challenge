@@ -1,6 +1,8 @@
+import './../style/tooltip.css'
+
 const Tooltip = ({ isVisible, name, distance }) => {
     return isVisible ?
-        <div>
+        <div className={'shopTooltip'}>
             <p>{name}</p>
             <p>{distance}</p>
         </div>
