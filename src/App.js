@@ -50,7 +50,7 @@ function App() {
               default:
                 setCoffeeShopsState({
                   isLoading: false,
-                  fetchError: `Could not fetch shop locations ${response.status} ${response.statusText}`
+                  fetchError: { code: response.status, text: response.statusText }
                 })
             }
           })
