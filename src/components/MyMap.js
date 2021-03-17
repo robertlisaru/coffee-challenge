@@ -3,11 +3,6 @@ import Tooltip from './Tooltip'
 import { useState } from 'react'
 const haversine = require('haversine')
 
-const osmProvider = (x, y, z) => {
-    const s = String.fromCharCode(97 + ((x + y + z) % 3))
-    return `https://${s}.tile.openstreetmap.org/${z}/${x}/${y}.png`
-}
-
 const MyMap = ({ shops, userLatitude, userLongitude }) => {
     const [shopTooltipsVisibility, setShopTooltipsVisibility] = useState([])
     const [userTooltipVisibility, setUserTooltipVisibility] = useState(false)
@@ -79,6 +74,11 @@ const MyMap = ({ shops, userLatitude, userLongitude }) => {
         {createUserMarker(userLatitude, userLongitude)}
         {createUserTooltip(userLatitude, userLongitude)}
     </Map >
+}
+
+const osmProvider = (x, y, z) => {
+    const s = String.fromCharCode(97 + ((x + y + z) % 3))
+    return `https://${s}.tile.openstreetmap.org/${z}/${x}/${y}.png`
 }
 
 export default MyMap
