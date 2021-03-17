@@ -65,19 +65,8 @@ function App() {
         userLatitude={userLocationState.latitude}
         userLongitude={userLocationState.longitude}
       />
-
-      <UserLocationText
-        isLoading={userLocationState.isLoading}
-        latitude={userLocationState.latitude}
-        longitude={userLocationState.longitude}
-        error={userLocationState.error}
-      />
-
-      <CoffeeShopsText
-        isLoading={coffeeShopsState.isLoading}
-        shops={coffeeShopsState.coffeeShops}
-        error={coffeeShopsState.fetchError}
-      />
+      <UserLocationText userLocationState={userLocationState} />
+      <CoffeeShopsText coffeeShopsState={coffeeShopsState} />
     </div>
   )
 }

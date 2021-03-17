@@ -51,7 +51,7 @@ const MyMap = ({ shops, userLatitude, userLongitude }) => {
                 anchor={[userLatitude, userLongitude]}
                 color='red'
                 payload={'user'}
-                onClick={({ }) => {
+                onClick={() => {
                     setUserTooltipVisibility(!userTooltipVisibility)
                 }}
             />

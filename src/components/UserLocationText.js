@@ -1,4 +1,5 @@
-const UserLocationText = ({ isLoading, latitude, longitude, error }) => {
+const UserLocationText = ({ userLocationState }) => {
+    const { latitude, longitude, isLoading, error } = userLocationState
     if (isLoading) return <div>Locating...</div>
     if (error) return <div>Error: {error}</div>
     return (
