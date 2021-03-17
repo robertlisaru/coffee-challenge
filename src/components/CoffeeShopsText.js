@@ -1,6 +1,6 @@
 const CoffeeShopsText = ({ coffeeShopsState }) => {
     const { isLoading, coffeeShops, fetchError } = coffeeShopsState
-    if (isLoading) return <p>Fetching coffee shop list</p>
+    if (isLoading) return CoffeeShopsLoadingMessage()
     if (fetchError) return CoffeeShopsErrorMessage(fetchError)
     if (!coffeeShops || coffeeShops.length === 0) return <p>No shops</p>
     return (
@@ -19,6 +19,10 @@ const CoffeeShopsText = ({ coffeeShopsState }) => {
 
 const CoffeeShopsErrorMessage = (fetchError) => {
     return <p>Could not fetch shop locations. {fetchError.code} {fetchError.text}</p>
+}
+
+const CoffeeShopsLoadingMessage = () => {
+    return <p>Fetching coffee shop list</p>
 }
 
 export default CoffeeShopsText
