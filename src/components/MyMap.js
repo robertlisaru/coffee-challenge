@@ -9,36 +9,32 @@ const osmProvider = (x, y, z) => {
 }
 
 const MyMap = ({ shops, userLatitude, userLongitude }) => {
-    const [tooltipsState, setTooltipsState] = useState([])
+    const [shopTooltipsVisibility, setShopTooltipsVisibility] = useState([])
     const [userTooltipVisibility, setUserTooltipVisibility] = useState(false)
 
-    const onMarkerClick = ({ event, anchor, payload }) => {
-        const index = payload;
-        let arrayCopy = [...tooltipsState]
+    const onShopMarkerClick = ({ payload }) => {
+        const index = payload
+        let arrayCopy = [...shopTooltipsVisibility]
         arrayCopy[index] = !arrayCopy[index]
-        setTooltipsState(arrayCopy)
+        setShopTooltipsVisibility(arrayCopy)
     }
 
-    return <Map provider={osmProvider}
-        defaultCenter={[45.795, 24.147]}
-        defaultZoom={4}
-        width={600}
-        height={400}>
-        {shops ? shops.map((shop) =>
+    const createShopMarkers = (shops) =>
+        shops ? shops.map((shop) =>
             <Marker
                 key={shop.id}
                 anchor={[parseFloat(shop.x), parseFloat(shop.y)]}
                 color='black'
                 payload={shop.id}
-                onClick={onMarkerClick}
+                onClick={onShopMarkerClick}
             />
+        ) : null
 
-        ) : null}
-
-        {shops ? shops.map((shop) =>
+    const createShopTooltips = (shops) =>
+        shops ? shops.map((shop) =>
             <Overlay key={shop.id} anchor={[parseFloat(shop.x), parseFloat(shop.y)]}>
                 <Tooltip
-                    isVisible={tooltipsState[shop.id]}
+                    isVisible={shopTooltipsVisibility[shop.id]}
                     name={shop.name}
                     distance={
                         Math.round(
@@ -47,28 +43,41 @@ const MyMap = ({ shops, userLatitude, userLongitude }) => {
                             ) * 10) / 10 + ' km'
                     } />
             </Overlay>
+        ) : null
 
-        ) : null}
-
-        {(userLatitude && userLongitude) ?
+    const createUserMarker = (userLatitude, userLongitude) =>
+        (userLatitude && userLongitude) ?
             <Marker
                 anchor={[userLatitude, userLongitude]}
                 color='red'
                 payload={'user'}
-                onClick={({ event, anchor, payload }) => {
+                onClick={({ }) => {
                     setUserTooltipVisibility(!userTooltipVisibility)
                 }}
             />
-            : null}
+            : null
 
-        {(userLatitude && userLongitude) ?
+    const createUserTooltip = (userLatitude, userLongitude) =>
+        (userLatitude && userLongitude) ?
             <Overlay anchor={[userLatitude, userLongitude]}>
                 <Tooltip
                     isVisible={userTooltipVisibility}
                     name={'Your location'}
                     distance={null} />
             </Overlay>
-            : null}
+            : null
+
+    return <Map
+        provider={osmProvider}
+        defaultCenter={[45.795, 24.147]}
+        defaultZoom={4}
+        width={600}
+        height={400}>
+
+        {createShopMarkers(shops)}
+        {createShopTooltips(shops)}
+        {createUserMarker(userLatitude, userLongitude)}
+        {createUserTooltip(userLatitude, userLongitude)}
     </Map >
 }
 

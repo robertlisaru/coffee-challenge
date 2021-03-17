@@ -5,15 +5,13 @@ const CoffeeShopsText = ({ isLoading, shops, error }) => {
     return (
         <ul>
             <h2>Coffee Shops</h2>
-            {shops.map((shop) => {
-                return (
-                    <li key={shop.id}>
-                        {shop.name}<br />
-                        {shop.x}<br />
-                        {shop.y}<br />
-                    </li>
-                )
-            })}
+            {shops.map((shop) =>
+                <li key={shop.id}>
+                    {shop.name}<br />
+                    {shop.x}<br />
+                    {shop.y}<br />
+                </li>
+            )}
         </ul>
     )
 }
