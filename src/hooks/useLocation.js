@@ -1,36 +1,40 @@
 import { useState, useEffect } from 'react'
+import StatefulData from '../utils/StatefulData'
 
 const useLocation = () => {
-    const [userLocationState, setUserLocationState] = useState({
-        latitude: null,
-        longitude: null,
-        isLoading: false,
-        error: null
-    })
+    const [userLocation, setUserLocation] = useState(new StatefulData())
 
-    const onUserLocationChange = ({ coords }) =>
-        setUserLocationState({
+    const onUserLocationChange = ({ coords }) => {
+        const newUserLocation = new StatefulData()
+        newUserLocation.setData({
             latitude: coords.latitude,
             longitude: coords.longitude,
         })
+        setUserLocation(newUserLocation)
+    }
 
-    const onUserLocationError = (error) =>
-        setUserLocationState({ error: error.message })
+    const onUserLocationError = (error) => {
+        const newUserLocation = new StatefulData()
+        newUserLocation.setError(error.message)
+        setUserLocation(newUserLocation)
+    }
 
     useEffect(() => {
         const geo = navigator.geolocation
         let watcher = null
-        if (!geo)
-            setUserLocationState({ error: 'Geolocation is not supported' })
+        if (!geo) {
+            const newUserLocation = new StatefulData()
+            newUserLocation.setError('Geolocation is not supported')
+            setUserLocation(newUserLocation)
+        }
         else {
-            setUserLocationState({ isLoading: true })
             watcher = geo.watchPosition(onUserLocationChange, onUserLocationError)
         }
 
         return () => geo.clearWatch(watcher)
     }, [])
 
-    return userLocationState
+    return userLocation
 }
 
 export default useLocation

@@ -1,6 +1,9 @@
 import { Map, Marker, Overlay } from 'pigeon-maps'
 import Tooltip from './Tooltip'
 import React from 'react'
+import PropTypes from 'prop-types'
+import StatefulData from './../utils/StatefulData'
+import DataStates from '../utils/DataStates'
 const haversine = require('haversine')
 
 class MyMap extends React.Component {
@@ -10,11 +13,11 @@ class MyMap extends React.Component {
             shopTooltipsVisibility: [],
             userTooltipVisibility: false
         }
-        this.toggleTooltipVisibility = this.toggleTooltipVisibility.bind(this);
+        this.toggleTooltipVisibility = this.toggleTooltipVisibility.bind(this)
     }
 
     render() {
-        const { shops, userLatitude, userLongitude } = this.props
+        const { shops, userLocation } = this.props
         return (
             <Map
                 provider={this.osmProvider}
@@ -25,8 +28,8 @@ class MyMap extends React.Component {
 
                 {this.createShopMarkers(shops)}
                 {this.createShopTooltips(shops)}
-                {this.createUserMarker(userLatitude, userLongitude)}
-                {this.createUserTooltip(userLatitude, userLongitude)}
+                {this.createUserMarker(userLocation)}
+                {this.createUserTooltip(userLocation)}
 
             </Map >
         )
@@ -40,7 +43,7 @@ class MyMap extends React.Component {
     }
 
     createShopMarkers(shops) {
-        return shops ? shops.map((shop) =>
+        return shops.dataState == DataStates.AVAILABLE ? shops.data.map((shop) =>
             <Marker
                 key={shop.id}
                 anchor={[parseFloat(shop.x), parseFloat(shop.y)]}
@@ -52,21 +55,21 @@ class MyMap extends React.Component {
     }
 
     createShopTooltips(shops) {
-        return shops ? shops.map((shop) =>
+        return shops.dataState == DataStates.AVAILABLE ? shops.data.map((shop) =>
             <Overlay key={shop.id} anchor={[parseFloat(shop.x), parseFloat(shop.y)]}>
                 <Tooltip
                     isVisible={this.state.shopTooltipsVisibility[shop.id]}
                     name={shop.name}
                     distance={this.computeDistanceFromUserTo(
-                        { latitude: shop.x, longitude: shop.y }) + ' km'} />
+                        { latitude: shop.x, longitude: shop.y })} />
             </Overlay>
         ) : null
     }
 
-    createUserMarker(userLatitude, userLongitude) {
-        return (userLatitude && userLongitude) ?
+    createUserMarker(userLocation) {
+        return (userLocation.dataState == DataStates.AVAILABLE) ?
             <Marker
-                anchor={[userLatitude, userLongitude]}
+                anchor={[userLocation.data.latitude, userLocation.data.longitude]}
                 color='red'
                 payload={'user'}
                 onClick={() => {
@@ -76,9 +79,9 @@ class MyMap extends React.Component {
             : null
     }
 
-    createUserTooltip(userLatitude, userLongitude) {
-        return (userLatitude && userLongitude) ?
-            <Overlay anchor={[userLatitude, userLongitude]}>
+    createUserTooltip(userLocation) {
+        return (userLocation.dataState == DataStates.AVAILABLE) ?
+            <Overlay anchor={[userLocation.data.latitude, userLocation.data.longitude]}>
                 <Tooltip
                     isVisible={this.state.userTooltipVisibility}
                     name={'Your location'}
@@ -88,23 +91,29 @@ class MyMap extends React.Component {
     }
 
     computeDistanceFromUserTo({ latitude, longitude }) {
-        return Math.round(
+        return (this.props.userLocation.dataState == DataStates.AVAILABLE) ? Math.round(
             haversine(
                 {
-                    latitude: this.props.userLatitude,
-                    longitude: this.props.userLongitude
+                    latitude: this.props.userLocation.data.latitude,
+                    longitude: this.props.userLocation.data.longitude
                 },
                 {
                     latitude: latitude,
                     longitude: longitude
                 }
-            ) * 10) / 10
+            ) * 10) / 10 + ' km'
+            : 'Locating...'
     }
 
     osmProvider(x, y, z) {
         const s = String.fromCharCode(97 + ((x + y + z) % 3))
         return `https://${s}.tile.openstreetmap.org/${z}/${x}/${y}.png`
     }
+}
+
+MyMap.propTypes = {
+    shops: PropTypes.instanceOf(StatefulData),
+    userLocation: PropTypes.instanceOf(StatefulData)
 }
 
 export default MyMap

@@ -1,20 +1,30 @@
-const CoffeeShopsText = ({ coffeeShopsState }) => {
-    const { isLoading, coffeeShops, fetchError } = coffeeShopsState
-    if (isLoading) return CoffeeShopsLoadingMessage()
-    if (fetchError) return CoffeeShopsErrorMessage(fetchError)
-    if (!coffeeShops || coffeeShops.length === 0) return CoffeeShopsEmptyListMessage()
-    return (
-        <ul>
-            <h2>Coffee Shops</h2>
-            {coffeeShops.map((shop) =>
-                <li key={shop.id}>
-                    {shop.name}<br />
-                    {shop.x}<br />
-                    {shop.y}<br />
-                </li>
-            )}
-        </ul>
-    )
+import DataStates from './../utils/DataStates'
+import React from 'react'
+import PropTypes from 'prop-types'
+import StatefulData from './../utils/StatefulData'
+
+const CoffeeShopsText = ({ coffeeShops }) => {
+    switch (coffeeShops.dataState) {
+        case DataStates.LOADING:
+            return CoffeeShopsLoadingMessage()
+        case DataStates.ERROR:
+            return CoffeeShopsErrorMessage(coffeeShops.error)
+        case DataStates.EMPTY:
+            return CoffeeShopsEmptyListMessage()
+        case DataStates.AVAILABLE:
+            return (
+                <ul>
+                    <h2>Coffee Shops</h2>
+                    {coffeeShops.data.map((shop) =>
+                        <li key={shop.id}>
+                            {shop.name}<br />
+                            {shop.x}<br />
+                            {shop.y}<br />
+                        </li>
+                    )}
+                </ul>
+            )
+    }
 }
 
 const CoffeeShopsErrorMessage = (fetchError) => {
@@ -27,6 +37,10 @@ const CoffeeShopsEmptyListMessage = () => {
 
 const CoffeeShopsLoadingMessage = () => {
     return <p>Fetching coffee shop list</p>
+}
+
+CoffeeShopsText.propTypes = {
+    coffeeShops: PropTypes.instanceOf(StatefulData)
 }
 
 export default CoffeeShopsText

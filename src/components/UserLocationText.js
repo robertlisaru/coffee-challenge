@@ -1,12 +1,19 @@
-const UserLocationText = ({ userLocationState }) => {
-    const { latitude, longitude, isLoading, error } = userLocationState
-    if (isLoading) return LocationLoadingMessage()
-    if (error) return LocationErrorMessage(error)
-    return (
-        <div>
-            Your location: {latitude}, {longitude}
-        </div>
-    )
+import React from 'react'
+import PropTypes from 'prop-types'
+import StatefulData from './../utils/StatefulData'
+import DataStates from './../utils/DataStates'
+
+const UserLocationText = ({ userLocation }) => {
+    switch (userLocation.dataState) {
+        case DataStates.LOADING:
+            return LocationLoadingMessage()
+        case DataStates.ERROR:
+            return LocationErrorMessage(userLocation.error)
+        case DataStates.AVAILABLE:
+            return <div>
+                Your location: {userLocation.data.latitude}, {userLocation.data.longitude}
+            </div>
+    }
 }
 
 const LocationLoadingMessage = () => {
@@ -15,6 +22,10 @@ const LocationLoadingMessage = () => {
 
 const LocationErrorMessage = (error) => {
     return <div>Error: {error}</div>
+}
+
+UserLocationText.propTypes = {
+    userLocation: PropTypes.instanceOf(StatefulData)
 }
 
 export default UserLocationText

@@ -3,20 +3,20 @@ import UserLocationText from './components/UserLocationText'
 import CoffeeShopsText from './components/CoffeeShopsText'
 import useLocation from './hooks/useLocation'
 import useCoffeeShops from './hooks/useCoffeeShops'
+import React from 'react'
 
 function App() {
-  const userLocationState = useLocation()
-  const coffeeShopsState = useCoffeeShops()
+  const userLocation = useLocation()
+  const coffeeShops = useCoffeeShops()
 
   return (
     <div>
       <MyMap
-        shops={coffeeShopsState.coffeeShops}
-        userLatitude={userLocationState.latitude}
-        userLongitude={userLocationState.longitude}
+        shops={coffeeShops}
+        userLocation={userLocation}
       />
-      <UserLocationText userLocationState={userLocationState} />
-      <CoffeeShopsText coffeeShopsState={coffeeShopsState} />
+      <UserLocationText userLocation={userLocation} />
+      <CoffeeShopsText coffeeShops={coffeeShops} />
     </div>
   )
 }

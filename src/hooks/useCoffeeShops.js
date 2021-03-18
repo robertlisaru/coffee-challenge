@@ -1,14 +1,10 @@
 import { useState, useEffect } from 'react'
+import StatefulData from './../utils/StatefulData'
 
 const useCoffeeShops = () => {
-    const [coffeeShopsState, setCoffeeShopsState] = useState({
-        isLoading: false,
-        coffeeShops: null,
-        fetchError: null
-    })
+    const [coffeeShops, setCoffeeShops] = useState(new StatefulData())
 
     const fetchCoffeeShops = async () => {
-        setCoffeeShopsState({ isLoading: true })
         const tokenResponse = await fetch(
             'https://blue-bottle-api-test.herokuapp.com/v1/tokens',
             { method: 'POST' }
@@ -17,27 +13,26 @@ const useCoffeeShops = () => {
         const coffeeShopsResponse = await fetch(
             `https://blue-bottle-api-test.herokuapp.com/v1/coffee_shops?token=${tokenJson.token}`
         )
+        const fetchedCoffeeShops = new StatefulData()
         switch (coffeeShopsResponse.status) {
             case 200:
-                const coffeeShopsJson = await coffeeShopsResponse.json()
-                setCoffeeShopsState({ isLoading: false, coffeeShops: coffeeShopsJson })
+                fetchedCoffeeShops.setData(await coffeeShopsResponse.json())
                 break
             default:
-                setCoffeeShopsState({
-                    isLoading: false,
-                    fetchError: {
+                fetchedCoffeeShops.setError(
+                    {
                         code: coffeeShopsResponse.status,
                         text: coffeeShopsResponse.statusText
-                    }
-                })
+                    })
         }
+        setCoffeeShops(fetchedCoffeeShops)
     }
 
     useEffect(() => {
         fetchCoffeeShops()
     }, [])
 
-    return coffeeShopsState
+    return coffeeShops
 }
 
 export default useCoffeeShops
