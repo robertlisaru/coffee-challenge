@@ -17,15 +17,6 @@ function App() {
     fetchError: null
   })
 
-  const onUserLocationChange = ({ coords }) =>
-    setUserLocationState({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-    })
-
-  const onUserLocationError = (error) =>
-    setUserLocationState({ error: error.message })
-
   useEffect(() => {
     const geo = navigator.geolocation
     let watcher = null
@@ -36,27 +27,45 @@ function App() {
       watcher = geo.watchPosition(onUserLocationChange, onUserLocationError)
     }
 
-    setCoffeeShopsState({ isLoading: true })
-    fetch('https://blue-bottle-api-test.herokuapp.com/v1/tokens', { method: 'POST' })
-      .then((response) => response.json())
-      .then((jsonData) => {
-        fetch(`https://blue-bottle-api-test.herokuapp.com/v1/coffee_shops?token=${jsonData.token}`)
-          .then((response) => {
-            switch (response.status) {
-              case 200:
-                response.json()
-                  .then((jsonData) => setCoffeeShopsState({ isLoading: false, coffeeShops: jsonData }))
-                break
-              default:
-                setCoffeeShopsState({
-                  isLoading: false,
-                  fetchError: { code: response.status, text: response.statusText }
-                })
-            }
-          })
-      })
+    fetchCoffeeShopsList()
+
     return () => geo.clearWatch(watcher)
-  }, [setCoffeeShopsState])
+  }, [])
+
+  const fetchCoffeeShopsList = async () => {
+    setCoffeeShopsState({ isLoading: true })
+    const tokenResponse = await fetch(
+      'https://blue-bottle-api-test.herokuapp.com/v1/tokens',
+      { method: 'POST' }
+    )
+    const tokenJson = await tokenResponse.json()
+    const coffeeShopsResponse = await fetch(
+      `https://blue-bottle-api-test.herokuapp.com/v1/coffee_shops?token=${tokenJson.token}`
+    )
+    switch (coffeeShopsResponse.status) {
+      case 200:
+        const coffeeShopsJson = await coffeeShopsResponse.json()
+        setCoffeeShopsState({ isLoading: false, coffeeShops: coffeeShopsJson })
+        break
+      default:
+        setCoffeeShopsState({
+          isLoading: false,
+          fetchError: {
+            code: coffeeShopsResponse.status,
+            text: coffeeShopsResponse.statusText
+          }
+        })
+    }
+  }
+
+  const onUserLocationChange = ({ coords }) =>
+    setUserLocationState({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+    })
+
+  const onUserLocationError = (error) =>
+    setUserLocationState({ error: error.message })
 
   return (
     <div>

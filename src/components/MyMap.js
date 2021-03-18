@@ -1,6 +1,6 @@
 import { Map, Marker, Overlay } from 'pigeon-maps'
 import Tooltip from './Tooltip'
-import React, { useState } from 'react'
+import React from 'react'
 const haversine = require('haversine')
 
 class MyMap extends React.Component {
