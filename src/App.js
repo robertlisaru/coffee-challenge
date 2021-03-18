@@ -2,14 +2,10 @@ import { useState, useEffect } from 'react'
 import MyMap from './components/MyMap'
 import UserLocationText from './components/UserLocationText'
 import CoffeeShopsText from './components/CoffeeShopsText'
+import useLocation from './hooks/useLocation'
 
 function App() {
-  const [userLocationState, setUserLocationState] = useState({
-    latitude: null,
-    longitude: null,
-    isLoading: false,
-    error: null
-  })
+  const userLocationState = useLocation()
 
   const [coffeeShopsState, setCoffeeShopsState] = useState({
     isLoading: false,
@@ -18,18 +14,7 @@ function App() {
   })
 
   useEffect(() => {
-    const geo = navigator.geolocation
-    let watcher = null
-    if (!geo)
-      setUserLocationState({ error: 'Geolocation is not supported' })
-    else {
-      setUserLocationState({ isLoading: true })
-      watcher = geo.watchPosition(onUserLocationChange, onUserLocationError)
-    }
-
     fetchCoffeeShopsList()
-
-    return () => geo.clearWatch(watcher)
   }, [])
 
   const fetchCoffeeShopsList = async () => {
@@ -57,15 +42,6 @@ function App() {
         })
     }
   }
-
-  const onUserLocationChange = ({ coords }) =>
-    setUserLocationState({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-    })
-
-  const onUserLocationError = (error) =>
-    setUserLocationState({ error: error.message })
 
   return (
     <div>
